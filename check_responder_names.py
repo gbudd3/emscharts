@@ -12,9 +12,22 @@ def clean(s):
     s = s.lower()
     return s
 
-names = {}
+def setup_name_dictionary():
+    d = {}
+    with open("responder_names.csv") as r_names:
+        for row in r_names:
+            row = row.rstrip()
+            na = row.split("|")
+            if len(na) == 2 and na[1]:
+                for a in na[1].split(","):
+                    d[a] = na[0]
+    return d
+
 
 def main():
+    names = {}
+    responder_names_by_alias = setup_name_dictionary()
+
     with open("data/Output_of_Response_Time_and_Type.txt") as csvfile:
         c = csv.reader(csvfile, delimiter='\t')
         for row in c:
@@ -23,10 +36,13 @@ def main():
 
             for n in re.split("\s*[,;&]\s*",row[12]):
                 if clean(n):
-                    names[clean(n)]=row[12]
+                    if clean(n) in responder_names_by_alias:
+                        names[responder_names_by_alias[clean(n)]] = ""
+                    else:
+                        names[clean(n)]=row[12]
 
 
     for n in sorted(names):
-        print(n + "\t ===> " + names[n])
+        print("'" + n + "'\t ===> " + names[n])
 
 main()
