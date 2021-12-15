@@ -28,7 +28,7 @@ def main():
     names = {}
     responder_names_by_alias = setup_name_dictionary()
 
-    with open("data/Output_of_Response_Time_and_Type.txt") as csvfile:
+    with open(0) as csvfile:
         c = csv.reader(csvfile, delimiter='\t')
         for row in c:
             if row[0] == "PRID":
