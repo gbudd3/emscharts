@@ -29,17 +29,15 @@ def main():
     responder_names_by_alias = setup_name_dictionary()
 
     with open(0) as csvfile:
-        c = csv.reader(csvfile, delimiter='\t')
+        c = csv.DictReader(csvfile, delimiter='\t')
         for row in c:
-            if row[0] == "PRID":
-                continue
 
-            for n in re.split("\s*[,;&]\s*",row[12]):
+            for n in re.split("\s*[,;&]\s*",row['Crew - All']):
                 if clean(n):
                     if clean(n) in responder_names_by_alias:
                         names[responder_names_by_alias[clean(n)]] = ""
                     else:
-                        names[clean(n)]=row[12]
+                        names[clean(n)]=row['Crew - All']
 
 
     for n in sorted(names):
