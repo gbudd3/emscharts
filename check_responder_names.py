@@ -41,7 +41,7 @@ def main():
     with open(0) as csvfile:
         c = csv.DictReader(csvfile, delimiter='\t')
         for row in c:
-            cursor.execute("insert into charts values( ?, ?)", (chart_id, row['PRID']))
+            cursor.execute("insert into charts values( ?, ?, ?)", (chart_id, row['PRID'], row['Dispatch ID']))
             print(f"Insert {chart_id} with {row['PRID']}")
 
             for n in re.split("\s*[,;&]\s*",row['Crew - All']):

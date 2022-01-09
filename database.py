@@ -15,7 +15,8 @@ def setup_database():
     cursor.execute("""
     create table charts (
         id int,
-        prid text
+        prid text,
+        dispatch_id text
     )
     """)
     conn.commit()
