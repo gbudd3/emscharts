@@ -16,7 +16,18 @@ def setup_database():
     create table charts (
         id int,
         prid text,
-        dispatch_id text
+        dispatch_id text,
+        date_dispatched,
+        date_enroute,
+        date_arrived,
+        disposition,
+        unit,
+        basesite,
+        dispatched_as,
+        type_of_service,
+        age_years,
+        gender,
+        usng
     )
     """)
     conn.commit()

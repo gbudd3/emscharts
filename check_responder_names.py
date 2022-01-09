@@ -25,6 +25,9 @@ def setup_name_dictionary():
                     d[a] = na[0]
     return d
 
+def emscharts_dtg_to_iso(dtg):
+    return re.sub(r"(\d\d)/(\d\d)/(\d\d\d\d) ",r"\3-\2-\1 ", dtg)
+
 
 def main():
     database.setup_database()
@@ -41,7 +44,22 @@ def main():
     with open(0) as csvfile:
         c = csv.DictReader(csvfile, delimiter='\t')
         for row in c:
-            cursor.execute("insert into charts values( ?, ?, ?)", (chart_id, row['PRID'], row['Dispatch ID']))
+            cursor.execute("insert into charts values( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+                chart_id,
+                row['PRID'],
+                row['Dispatch ID'],
+                emscharts_dtg_to_iso(row["Date Dispatched"]),
+                emscharts_dtg_to_iso(row["Date Enroute"]),
+                emscharts_dtg_to_iso(row["Date Arrived"]),
+                row['Disposition (Outcome)'],
+                row['Unit'],
+                row['Basesite'],
+                row['Dispatched As'],
+                row['Type of Service (IH/Scene)'],
+                row['Age In Years (Calc)'],
+                row['Gender'],
+                row['Referring USNG']
+            ))
             print(f"Insert {chart_id} with {row['PRID']}")
 
             for n in re.split("\s*[,;&]\s*",row['Crew - All']):
