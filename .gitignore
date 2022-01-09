@@ -1,3 +1,4 @@
 data/*
 output/*
 .*.swp
+__pycache__/

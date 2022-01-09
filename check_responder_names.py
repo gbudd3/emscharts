@@ -2,6 +2,8 @@
 
 import csv
 import re
+import database
+import collections
 
 def clean(s):
     s = re.sub("\(.+?\)","",s)
@@ -25,22 +27,49 @@ def setup_name_dictionary():
 
 
 def main():
+    database.setup_database()
+    conn = database.get_database()
+    cursor = conn.cursor()
+
     names = {}
+    name_charts = collections.defaultdict(list)
+    responder_id = {}
     responder_names_by_alias = setup_name_dictionary()
+    chart_id = 1
+    member_id = 1
 
     with open(0) as csvfile:
         c = csv.DictReader(csvfile, delimiter='\t')
         for row in c:
+            cursor.execute("insert into charts values( ?, ?)", (chart_id, row['PRID']))
+            print(f"Insert {chart_id} with {row['PRID']}")
 
             for n in re.split("\s*[,;&]\s*",row['Crew - All']):
                 if clean(n):
                     if clean(n) in responder_names_by_alias:
                         names[responder_names_by_alias[clean(n)]] = ""
+                        name_charts[responder_names_by_alias[clean(n)]].append(chart_id)
                     else:
                         names[clean(n)]=row['Crew - All']
+            chart_id += 1
 
+    conn.commit()
 
     for n in sorted(names):
         print("'" + n + "'\t ===> " + names[n])
+        cursor.execute("insert into members values( ?, ?)", (member_id, n))
+        responder_id[n] = member_id
+
+        member_id += 1
+
+    conn.commit()
+
+    for name in name_charts.keys():
+        for i in name_charts[name]:
+            cursor.execute("insert into member_charts values(?, ?)", (i, responder_id[name]))
+            
+    conn.commit()
+    conn.close()
+
 
 main()
